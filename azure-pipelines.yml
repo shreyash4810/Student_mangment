@@ -8,14 +8,14 @@ pool:
 
 stages:
   - stage: 
-    displayName: 'maven package'
+    displayName: "maven-pacakege"
     jobs:
-    - job: package
-      steps:
+      - job: pacakge
+        steps:
         - task: Maven@4
           inputs:
             azureSubscription: 'Azure subscription 1(2b991cbf-3249-4aa2-9d38-9b026b171757)'
-            mavenPomFile: 'Student_mangment / pom.xml'
+            mavenPomFile: 'pom.xml'
             publishJUnitResults: true
             testResultsFiles: '**/surefire-reports/TEST-*.xml'
             javaHomeOption: 'JDKVersion'
@@ -23,6 +23,6 @@ stages:
             mavenAuthenticateFeed: false
             effectivePomSkip: false
             sonarQubeRunAnalysis: false
-                
+      
 
 
