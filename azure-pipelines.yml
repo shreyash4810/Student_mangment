@@ -7,9 +7,9 @@ pool:
 steps:
 
 - task: Maven@4
-  displayName: 'Build JAR (Skip Tests)'
+  displayName: 'Build JAR'
   inputs:
-    mavenPomFile: 'pom.xml'
+    mavenPomFile: 'Student_mangment/pom.xml'
     goals: 'clean package'
     options: '-DskipTests'
     publishJUnitResults: false
@@ -17,26 +17,12 @@ steps:
     jdkVersionOption: '1.17'
     mavenVersionOption: 'Default'
 
-- script: |
-    echo ===== Current Directory =====
-    cd
-    echo ===== Repository Files =====
-    dir "$(Build.SourcesDirectory)"
-    echo ===== Target Folder =====
-    dir "$(Build.SourcesDirectory)\target"
-  displayName: 'Verify Build Output'
-
 - task: CopyFiles@2
   displayName: 'Copy JAR'
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)\target'
+    SourceFolder: '$(Build.SourcesDirectory)\Student_mangment\target'
     Contents: '*.jar'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- script: |
-    echo ===== Artifact Staging =====
-    dir "$(Build.ArtifactStagingDirectory)"
-  displayName: 'Verify Artifact'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
