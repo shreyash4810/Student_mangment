@@ -1,28 +1,36 @@
-
-
 trigger:
-- main
+- none
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
-stages:
-  - stage: 
-    displayName: "maven-pacakege"
-    jobs:
-      - job: pacakge
-        steps:
-        - task: Maven@4
-          inputs:
-            azureSubscription: 'Azure subscription 1(2b991cbf-3249-4aa2-9d38-9b026b171757)'
-            mavenPomFile: 'pom.xml'
-            publishJUnitResults: true
-            testResultsFiles: '**/surefire-reports/TEST-*.xml'
-            javaHomeOption: 'JDKVersion'
-            mavenVersionOption: 'Default'
-            mavenAuthenticateFeed: false
-            effectivePomSkip: false
-            sonarQubeRunAnalysis: false
+steps:
+
+- task: Maven@4
+  displayName: 'Build Spring Boot Application'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean package'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.17'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+
+- task: CopyFiles@2
+  displayName: 'Copy JAR'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/target'
+    Contents: '*.jar'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish JAR Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
       
 
 
