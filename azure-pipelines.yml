@@ -5,11 +5,12 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- checkout: self
 
 - task: Maven@4
-  displayName: 'Build JAR'
+  displayName: 'Build Spring Boot JAR'
   inputs:
-    mavenPomFile: 'Student_mangment/pom.xml'
+    mavenPomFile: 'pom.xml'
     goals: 'clean package'
     options: '-DskipTests'
     publishJUnitResults: false
@@ -17,10 +18,15 @@ steps:
     jdkVersionOption: '1.17'
     mavenVersionOption: 'Default'
 
+- script: |
+    echo "Listing target folder"
+    ls -la target
+  displayName: 'Verify JAR'
+
 - task: CopyFiles@2
   displayName: 'Copy JAR'
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)\Student_mangment\target'
+    SourceFolder: '$(Build.SourcesDirectory)/target'
     Contents: '*.jar'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
@@ -30,5 +36,3 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-
-
