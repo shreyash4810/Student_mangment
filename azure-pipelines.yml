@@ -1,31 +1,38 @@
 trigger:
-- none
+- main
 
 pool:
   vmImage: 'windows-latest'
-
+  
 steps:
 
+- task: JavaToolInstaller@0
+  displayName: 'Use Java 17'
+  inputs:
+    versionSpec: '$(javaVersion)'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
 - task: Maven@4
-  displayName: 'Build Spring Boot Application'
+  displayName: 'Build JAR (Skip Tests)'
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean package'
+    options: '-DskipTests'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.17'
     mavenVersionOption: 'Default'
-    mavenAuthenticateFeed: false
 
 - task: CopyFiles@2
-  displayName: 'Copy JAR'
+  displayName: 'Copy JAR to Artifact Staging'
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/target'
+    SourceFolder: '$(Build.SourcesDirectory)\target'
     Contents: '*.jar'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish JAR Artifact'
+  displayName: 'Publish Build Artifact'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
