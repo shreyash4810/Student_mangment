@@ -6,13 +6,6 @@ pool:
   
 steps:
 
-- task: JavaToolInstaller@0
-  displayName: 'Use Java 17'
-  inputs:
-    versionSpec: '$(javaVersion)'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
-
 - task: Maven@4
   displayName: 'Build JAR (Skip Tests)'
   inputs:
