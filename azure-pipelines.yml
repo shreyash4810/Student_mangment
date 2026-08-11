@@ -3,7 +3,7 @@ trigger:
 
 pool:
   vmImage: 'windows-latest'
-  
+
 steps:
 
 - task: Maven@4
@@ -17,19 +17,32 @@ steps:
     jdkVersionOption: '1.17'
     mavenVersionOption: 'Default'
 
+- script: |
+    echo ===== Current Directory =====
+    cd
+    echo ===== Repository Files =====
+    dir "$(Build.SourcesDirectory)"
+    echo ===== Target Folder =====
+    dir "$(Build.SourcesDirectory)\target"
+  displayName: 'Verify Build Output'
+
 - task: CopyFiles@2
-  displayName: 'Copy JAR to Artifact Staging'
+  displayName: 'Copy JAR'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)\target'
     Contents: '*.jar'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
+- script: |
+    echo ===== Artifact Staging =====
+    dir "$(Build.ArtifactStagingDirectory)"
+  displayName: 'Verify Artifact'
+
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Build Artifact'
+  displayName: 'Publish Artifact'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-      
 
 
